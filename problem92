@@ -1,0 +1,70 @@
+def calc_next_num(num):
+    sm = 0
+    
+    while(num > 0):
+        digit = num % 10
+        sm += digit**2
+
+        num //= 10
+
+    return sm
+
+counter = 0
+mx = 10_000_000
+
+# Find the maximum calculated number
+mx_square = 0
+for i in range(0, len(str(mx))):
+    mx_square += 9**2
+
+# Keep lists for both values
+check_list_89 = [89]
+check_list_1 = [1]
+
+# Fill above lists
+for i in range(1,mx_square):
+    num = i
+    # Empty list
+    check_list = []
+
+    # Found natural 1 or 89, skip
+    if i in [1,89]:
+        continue
+    
+    while(1):
+        # Found 89
+        if num in check_list_89:
+            # Add accumulated values to 89s list
+            for j in check_list:
+                check_list_89.append(j)
+            
+            # Next number
+            break
+        # Found 1
+        elif num in check_list_1:
+            # Add accumulated values to 1 list
+            for j in check_list:
+                check_list_1.append(j)
+            
+            # Next number
+            break
+        else:
+            # Keep this number in a list to add to 1 or 89 list later
+            check_list.append(num)
+            # Calculate and check next number
+            num = calc_next_num(num)
+            
+# The amount of numbers leading to 1 is less than those that lead to 89
+# Check for 1s first
+for i in range(1,mx+1):
+    # Check if the number is directy in 1s list or 
+    # if the calculated value is in the list
+    if i in check_list_1 or calc_next_num(i) in check_list_1:
+        # Increase 1s counter
+        counter += 1
+
+# If a number ends either as 1 or 89
+# Subtract from total to find 89s list
+print(mx - counter)
+
+# Answer: 8581146
